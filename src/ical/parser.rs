@@ -2,7 +2,7 @@
 
 use std::error::Error;
 
-use chrono::{DateTime, TimeZone, Utc};
+use chrono::{DateTime, NaiveDateTime, TimeZone, Utc};
 use ical::parser::ical::component::{IcalCalendar, IcalEvent, IcalTodo};
 use url::Url;
 
@@ -143,8 +143,9 @@ pub fn parse(
 }
 
 fn parse_date_time(dt: &str) -> Result<DateTime<Utc>, chrono::format::ParseError> {
-    Utc.datetime_from_str(dt, "%Y%m%dT%H%M%SZ")
-        .or_else(|_err| Utc.datetime_from_str(dt, "%Y%m%dT%H%M%S"))
+    let naive_dt = NaiveDateTime::parse_from_str(dt, "%Y%m%dT%H%M%SZ")
+        .or_else(|_err| NaiveDateTime::parse_from_str(dt, "%Y%m%dT%H%M%S"))?;
+    Ok(Utc.from_utc_datetime(&naive_dt))
 }
 
 fn parse_date_time_from_property(value: &Option<String>) -> Option<DateTime<Utc>> {
@@ -167,6 +168,7 @@ fn extract_ical_prod_id(item: &IcalCalendar) -> Option<&str> {
     None
 }
 
+#[allow(dead_code)]
 enum CurrentType<'a> {
     Event(&'a IcalEvent),
     Todo(&'a IcalTodo),

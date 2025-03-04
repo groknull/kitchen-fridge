@@ -274,11 +274,11 @@ impl CompleteCalendar for CachedCalendar {
         self.get_item_urls_sync()
     }
 
-    async fn get_items(&self) -> Result<HashMap<Url, &Item>, Box<dyn Error>> {
+    async fn get_items<'a>(&'a self) -> Result<HashMap<Url, &'a Item>, Box<dyn Error>> {
         self.get_items_sync()
     }
 
-    async fn get_items_mut(&mut self) -> Result<HashMap<Url, &mut Item>, Box<dyn Error>> {
+    async fn get_items_mut<'a>(&'a mut self) -> Result<HashMap<Url, &'a mut Item>, Box<dyn Error>> {
         self.get_items_mut_sync()
     }
 
